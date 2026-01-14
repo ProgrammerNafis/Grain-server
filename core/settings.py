@@ -149,3 +149,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 #hosts
 ALLOWED_HOSTS = ['*']
+
+#pagination blog 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6  # প্রতি পেজে ৬টি করে পোস্ট দেখাবে
+}
