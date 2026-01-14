@@ -18,8 +18,23 @@ class Post(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
     content = models.TextField()
-    image_url = models.URLField(max_length=500, blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
+
+    image_file = models.ImageField(upload_to='post_images/', blank=True, null=True)
+    
+    image_url = models.URLField(max_length=500, blank=True, null=True)
+    
+    
+    
+    @property
+    def get_image(self):
+        if self.image_file:
+            return self.image_file.url
+        elif self.image_url:
+            return self.image_url
+        return "https://via.placeholder.com/400"
+        
 
     def save(self, *args, **kwargs):
         if not self.slug:
