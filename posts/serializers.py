@@ -35,7 +35,7 @@ class PostSerializer(serializers.ModelSerializer):
 #usr
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.WriteOnlyField()
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
