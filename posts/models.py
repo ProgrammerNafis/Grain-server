@@ -1,5 +1,9 @@
 from django.db import models
 from django.utils.text import slugify
+from django.contrib.auth.models import User
+
+
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -43,3 +47,29 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+        
+        
+        
+        
+        
+#usr cmnt
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
+    profile_pic = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    admin_message = models.TextField(blank=True, help_text="Message from Admin to this User")
+
+    def __str__(self):
+        return self.user.username
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # শুধু লগইন করা ইউজার
+    body = models.TextField()
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies') # রিপ্লাই সিস্টেম
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"By {this.user.username} on {this.post.title}"

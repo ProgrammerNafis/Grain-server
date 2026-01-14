@@ -3,6 +3,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Category, Post
 from .serializers import CategorySerializer, PostSerializer
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+
+
+
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
@@ -33,3 +40,21 @@ class PostList(generics.ListCreateAPIView):
     
     # কোন ফিল্ড দিয়ে ফিল্টার হবে (ক্যাটাগরি)
     filterset_fields = ['category']
+    
+    
+    
+#usr
+
+
+class UserDashboard(APIView):
+    permission_classes = [IsAuthenticated] # শুধু লগইন করা ইউজার ঢুকতে পারবে
+
+    def get(self, request):
+        profile = UserProfile.objects.get(user=request.user)
+        return Response({
+            "username": request.user.username,
+            "email": request.user.email,
+            "bio": profile.bio,
+            "admin_message": profile.admin_message, # অ্যাডমিন মেসেজ
+            "profile_pic": request.build_absolute_uri(profile.profile_pic.url) if profile.profile_pic else None
+        })
