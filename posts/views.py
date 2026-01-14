@@ -8,6 +8,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
+from rest_framework import status
+from .serializers import UserSerializer
+
+from rest_framework.permissions import AllowAny
+
+
 
 
 class PostList(generics.ListCreateAPIView):
@@ -58,3 +64,17 @@ class UserDashboard(APIView):
             "admin_message": profile.admin_message, # অ্যাডমিন মেসেজ
             "profile_pic": request.build_absolute_uri(profile.profile_pic.url) if profile.profile_pic else None
         })
+        
+        
+        
+#reg
+
+class RegisterUser(APIView):
+    permission_classes = [AllowAny] # যে কেউ অ্যাকাউন্ট খুলতে পারবে
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User created successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
